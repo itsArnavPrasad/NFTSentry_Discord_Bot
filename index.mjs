@@ -51,6 +51,18 @@ const commands = [
     name: "help_nftsentry",
     description: "Show all available commands",
   },
+  {
+    name: "owner_history",
+    description: "Get the owner history of a particular NFT",
+    options: [
+      {
+        type: 3, // STRING type
+        name: "token_id",
+        description: "The NFT token ID",
+        required: true,
+      },
+    ],
+  },
 ];
 
 // Register commands
@@ -282,6 +294,67 @@ client.on("interactionCreate", async (interaction) => {
       embeds: [embed],
       ephemeral: hideResponseFromAll, // Change to false if you want it visible to everyone
     });
+  } else if (commandName === "owner_history") {
+    const tokenId = options.getString("token_id");
+
+    // GraphQL query to fetch ownership history for a specific token ID
+    const query = `
+      {
+        transfers(where: { tokenId: "${tokenId}" }, orderBy: blockTimestamp, orderDirection: desc) {
+          from
+          to
+          tokenId
+          transactionHash
+          blockTimestamp
+        }
+      }
+    `;
+
+    try {
+      const result = await graphqlQuery(query);
+
+      if (result && result.transfers.length > 0) {
+        const imageUrl = `https://storage.googleapis.com/nftimagebucket/tokens/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/preview/${tokenId}.png`;
+        const embed = new EmbedBuilder()
+          .setColor(colourOfEmbed) // Set the embed color
+          .setTitle(`Owner History for Token ID: ${tokenId}`) // Title with the token ID
+          .setTimestamp() // Add a timestamp
+          .setImage(imageUrl)
+          .setFooter({ text: "NFTSentry" }); // Footer
+
+        // Loop through the ownership history and add to embed fields
+        result.transfers.forEach((transfer, index) => {
+          embed.addFields({
+            name: `Transfer #${index + 1}`,
+            value: `**From:** ${transfer.from}\n**To:** ${
+              transfer.to
+            }\n**Transaction Hash:** ${
+              transfer.transactionHash
+            }\n**Timestamp:** ${new Date(
+              transfer.blockTimestamp * 1000
+            ).toLocaleString()}`,
+            inline: false,
+          });
+        });
+
+        // Send the embed response
+        await interaction.reply({
+          embeds: [embed],
+          ephemeral: true,
+        });
+      } else {
+        await interaction.reply({
+          content: `No ownership history found for Token ID: ${tokenId}.`,
+          ephemeral: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error retrieving owner history:", error);
+      await interaction.reply({
+        content: "There was an error retrieving the owner history.",
+        ephemeral: true,
+      });
+    }
   }
 });
 
