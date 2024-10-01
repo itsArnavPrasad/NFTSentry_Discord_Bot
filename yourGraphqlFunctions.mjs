@@ -10,5 +10,5 @@ export async function graphqlQuery(query) {
   });
 
   const data = await response.json();
-  return data.data; // Adjust based on your GraphQL response structure
+  return data.data; // Adjust if needed
 }

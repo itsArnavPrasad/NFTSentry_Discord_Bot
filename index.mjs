@@ -15,7 +15,6 @@ const client = new Client({
   ],
 });
 
-// Replace these with your actual IDs
 const clientId = "1290328040898826375"; // Your Client ID here
 const colourOfEmbed = "#0099ff";
 
@@ -37,7 +36,7 @@ const commands = [
     ],
   },
   {
-    name: "nft_details", // New command
+    name: "nft_details",
     description: "Get details of an BAYC NFT by token ID",
     options: [
       {
@@ -264,7 +263,7 @@ client.on("interactionCreate", async (interaction) => {
       .map((cmd) => `***${cmd.name}*** : ${cmd.description}`)
       .join("\n\n");
 
-    // Add your social media links
+    // social media links
     const socialLinks = `
       \n**Follow me on social media:**
       - Twitter: [@ArnavPrasa89325](https://x.com/ArnavPrasa89325)\n
@@ -286,5 +285,5 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-// Log in to Discord with your bot token
+// Log in to Discord
 client.login(process.env.DISCORD_BOT_TOKEN);
