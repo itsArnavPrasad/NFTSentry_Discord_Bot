@@ -6,7 +6,7 @@
 
 ## Overview
 
-NFTSentry is a Discord bot designed to provide users with real-time information about the Bored Ape Yacht Club (BAYC) NFT collection. Utilizing GraphQL and The Graph's subgraphs technology, this bot enables users to access blockchain data seamlessly within their Discord servers.
+NFTSentry is a Discord bot designed to provide users with real-time information about the Bored Ape Yacht Club (BAYC) NFT collection. Utilizing GraphQL and The Graph's subgraphs technology, this bot enables users to access blockchain data seamlessly within their Discord servers. The bot is hosted and deployed through [Railway App](https://railway.app/) to ensure round the clock up-time.
 
 ## Features
 
