@@ -375,67 +375,39 @@ client.on("interactionCreate", async (interaction) => {
     }
   } else if (commandName === "nft_details") {
     const tokenId = options.getString("token_id");
-    const query = `
-      {
-        transfers(first: 1, where: { tokenId: "${tokenId}" }, orderBy: blockTimestamp, orderDirection: desc) {
-          tokenId
-          transactionHash
-        }
-      }
-    `;
 
     try {
-      const result = await graphqlQuery(query);
-      if (result && result.transfers.length > 0) {
-        const transfer = result.transfers[0];
+      const ipfsUri = `ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/${tokenId}`;
+      const imageUrl = `https://storage.googleapis.com/nftimagebucket/tokens/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/preview/${tokenId}.png`;
 
-        const ipfsUri = `ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/${tokenId}`;
-        const imageUrl = `https://storage.googleapis.com/nftimagebucket/tokens/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/preview/${tokenId}.png`;
+      const metadataResponse = await fetch(
+        `https://ipfs.io/ipfs/${ipfsUri.split("ipfs://")[1]}`
+      );
+      const metadata = await metadataResponse.json();
 
-        const metadataResponse = await fetch(
-          `https://ipfs.io/ipfs/${ipfsUri.split("ipfs://")[1]}`
-        );
-        const metadata = await metadataResponse.json();
+      // Create a new embed instance using EmbedBuilder
+      const embed = new EmbedBuilder()
+        .setColor(colourOfEmbed) // Set the embed color
+        .setTitle("NFT Details") // Set the title of the embed
+        .setImage(imageUrl) // Add the NFT image
+        .addFields(
+          { name: "**Token ID:**", value: tokenId, inline: true },
+          { name: "**Name:**", value: metadata.name || "N/A", inline: true },
+          {
+            name: "**Attributes:**",
+            value:
+              metadata.attributes
+                .map((attr) => `${attr.trait_type}: ${attr.value}`)
+                .join("\n") || "None",
+            inline: false,
+          }
+        )
+        .setTimestamp();
 
-        // Create a new embed instance using EmbedBuilder
-        const embed = new EmbedBuilder()
-          .setColor(colourOfEmbed) // Set the embed color
-          .setTitle("NFT Details") // Set the title of the embed
-          .setImage(imageUrl) // Add the NFT image
-          .addFields(
-            { name: "**Token ID:**", value: transfer.tokenId, inline: true },
-            {
-              name: "**Transaction Hash:**",
-              value: transfer.transactionHash,
-              inline: true,
-            },
-            { name: "**Name:**", value: metadata.name || "N/A", inline: true },
-            {
-              name: "**Description:**",
-              value: metadata.description || "N/A",
-              inline: false,
-            },
-            {
-              name: "**Attributes:**",
-              value:
-                metadata.attributes
-                  .map((attr) => `${attr.trait_type}: ${attr.value}`)
-                  .join(",\n") || "None",
-              inline: false,
-            }
-          )
-          .setTimestamp(); // Optionally, add a timestamp
-
-        await interaction.reply({
-          embeds: [embed],
-          ephemeral: hideResponseFromAll,
-        });
-      } else {
-        await interaction.reply({
-          content: "No history found for this token ID.",
-          ephemeral: true,
-        });
-      }
+      await interaction.reply({
+        embeds: [embed],
+        ephemeral: hideResponseFromAll,
+      });
     } catch (error) {
       console.error("Error retrieving NFT details:", error);
       await interaction.reply({
