@@ -420,7 +420,7 @@ client.on("interactionCreate", async (interaction) => {
               value:
                 metadata.attributes
                   .map((attr) => `${attr.trait_type}: ${attr.value}`)
-                  .join(", ") || "None",
+                  .join(",\n") || "None",
               inline: false,
             }
           )
