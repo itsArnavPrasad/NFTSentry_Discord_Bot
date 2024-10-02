@@ -136,14 +136,14 @@ client.on("interactionCreate", async (interaction) => {
         // Loop through the transfers and add them to the embed
         result.transfers.forEach((transfer, index) => {
           embed.addFields({
-            name: `Transfer #${index + 1}`,
+            name: `Transfer #${index + 1}, **Token ID:** ${transfer.tokenId}`,
             value: `**From:** ${transfer.from}\n**To:** ${
               transfer.to
-            }\n**Token ID:** ${transfer.tokenId}\n**Transaction Hash:** ${
+            }\n\n**Transaction Hash:** ${
               transfer.transactionHash
             }\n**Timestamp:** ${new Date(
               transfer.blockTimestamp * 1000
-            ).toLocaleString()}`,
+            ).toLocaleString()}\n`,
             inline: false,
           });
         });
