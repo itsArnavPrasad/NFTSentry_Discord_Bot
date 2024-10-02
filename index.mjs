@@ -392,7 +392,6 @@ client.on("interactionCreate", async (interaction) => {
         .setImage(imageUrl) // Add the NFT image
         .addFields(
           { name: "**Token ID:**", value: tokenId, inline: true },
-          { name: "**Name:**", value: metadata.name || "N/A", inline: true },
           {
             name: "**Attributes:**",
             value:
