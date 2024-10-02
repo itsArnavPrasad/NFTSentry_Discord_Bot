@@ -139,7 +139,7 @@ client.on("interactionCreate", async (interaction) => {
             name: `Transfer #${index + 1}, **Token ID:** ${transfer.tokenId}`,
             value: `**From:** ${transfer.from}\n**To:** ${
               transfer.to
-            }\n\n**Transaction Hash:** ${
+            }\n**Transaction Hash:** ${
               transfer.transactionHash
             }\n**Timestamp:** ${new Date(
               transfer.blockTimestamp * 1000

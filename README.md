@@ -12,8 +12,9 @@ NFTSentry is a Discord bot designed to provide users with real-time information 
 
 - **Latest Transfers**: Fetch the latest 5 transfers of NFTs in the BAYC collection.
 - **Transaction Search**: Look up specific transactions by hash to view detailed transfer information.
-- **NFT Details**: Get information about a specific NFT by token ID, including its current owner and the last transaction hash.
+- **NFT Details**: Get information about the attributes of a specific NFT by token ID.
 - **NFT Ownership Details**: Get the ownership history of a particular NFT, from its minting.
+- **Current Ownership**: Get the current owner of a particular NFT.
 - **Help Command**: Displays all available commands with their descriptions to assist users.
 
 ## Getting Started
@@ -28,7 +29,7 @@ NFTSentry is a Discord bot designed to provide users with real-time information 
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/nftsentry.git
+   git clone https://github.com/itsArnavPrasad/NFTSentry_Discord_Bot.git
    cd nftsentry
    ```
 2. **Install Dependencies**:
