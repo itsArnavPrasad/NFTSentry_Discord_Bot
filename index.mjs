@@ -20,10 +20,12 @@ const colourOfEmbed = "#0099ff";
 
 const commands = [
   {
+    // /latest_transfers
     name: "latest_transfers",
     description: "Get the 5 latest transfers of the BAYC Collection",
   },
   {
+    // /search_transaction
     name: "search_transaction",
     description: "Search a transaction of the BAYC Collection by hash",
     options: [
@@ -36,8 +38,9 @@ const commands = [
     ],
   },
   {
-    name: "nft_details",
-    description: "Get details of an BAYC NFT by token ID",
+    // /current_owner
+    name: "current_owner",
+    description: "Get details of the current owner of the BAYC NFT by token ID",
     options: [
       {
         type: 3, // STRING type
@@ -48,12 +51,27 @@ const commands = [
     ],
   },
   {
+    // /help_nftsentry
     name: "help_nftsentry",
     description: "Show all available commands",
   },
   {
+    //owner_history
     name: "owner_history",
     description: "Get the owner history of a particular NFT",
+    options: [
+      {
+        type: 3, // STRING type
+        name: "token_id",
+        description: "The NFT token ID",
+        required: true,
+      },
+    ],
+  },
+  {
+    // /nft_details
+    name: "nft_details",
+    description: "Get details of the BAYC NFT",
     options: [
       {
         type: 3, // STRING type
@@ -213,7 +231,7 @@ client.on("interactionCreate", async (interaction) => {
         ephemeral: true,
       });
     }
-  } else if (commandName === "nft_details") {
+  } else if (commandName === "current_owner") {
     const tokenId = options.getString("token_id");
     const query = `
       {
@@ -352,6 +370,76 @@ client.on("interactionCreate", async (interaction) => {
       console.error("Error retrieving owner history:", error);
       await interaction.reply({
         content: "There was an error retrieving the owner history.",
+        ephemeral: true,
+      });
+    }
+  } else if (commandName === "nft_details") {
+    const tokenId = options.getString("token_id");
+    const query = `
+      {
+        transfers(first: 1, where: { tokenId: "${tokenId}" }, orderBy: blockTimestamp, orderDirection: desc) {
+          tokenId
+          transactionHash
+        }
+      }
+    `;
+
+    try {
+      const result = await graphqlQuery(query);
+      if (result && result.transfers.length > 0) {
+        const transfer = result.transfers[0];
+
+        const ipfsUri = `ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/${tokenId}`;
+        const imageUrl = `https://storage.googleapis.com/nftimagebucket/tokens/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/preview/${tokenId}.png`;
+
+        const metadataResponse = await fetch(
+          `https://ipfs.io/ipfs/${ipfsUri.split("ipfs://")[1]}`
+        );
+        const metadata = await metadataResponse.json();
+
+        // Create a new embed instance using EmbedBuilder
+        const embed = new EmbedBuilder()
+          .setColor(colourOfEmbed) // Set the embed color
+          .setTitle("NFT Details") // Set the title of the embed
+          .setImage(imageUrl) // Add the NFT image
+          .addFields(
+            { name: "**Token ID:**", value: transfer.tokenId, inline: true },
+            {
+              name: "**Transaction Hash:**",
+              value: transfer.transactionHash,
+              inline: true,
+            },
+            { name: "**Name:**", value: metadata.name || "N/A", inline: true },
+            {
+              name: "**Description:**",
+              value: metadata.description || "N/A",
+              inline: false,
+            },
+            {
+              name: "**Attributes:**",
+              value:
+                metadata.attributes
+                  .map((attr) => `${attr.trait_type}: ${attr.value}`)
+                  .join(", ") || "None",
+              inline: false,
+            }
+          )
+          .setTimestamp(); // Optionally, add a timestamp
+
+        await interaction.reply({
+          embeds: [embed],
+          ephemeral: hideResponseFromAll,
+        });
+      } else {
+        await interaction.reply({
+          content: "No history found for this token ID.",
+          ephemeral: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error retrieving NFT details:", error);
+      await interaction.reply({
+        content: "There was an error retrieving the NFT details.",
         ephemeral: true,
       });
     }
