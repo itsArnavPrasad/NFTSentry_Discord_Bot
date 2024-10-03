@@ -188,66 +188,41 @@ client.on("interactionCreate", async (interaction) => {
       if (result && result.transfers.length > 0) {
         const transfer = result.transfers[0]; // expect only 1 result
 
-        // Fetch transaction details from Etherscan (replace YOUR_API_KEY with your actual key)
-        const etherscanApiKey = "YOUR_ETHERSCAN_API_KEY";
-        const etherscanUrl = `https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=${transactionHash}&apikey=${etherscanApiKey}`;
+        // PNG of NFT URL
+        const imageUrl = `https://storage.googleapis.com/nftimagebucket/tokens/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/preview/${transfer.tokenId}.png`;
 
-        // Fetch the transaction data from Etherscan
-        const etherscanResponse = await fetch(etherscanUrl);
-        const etherscanData = await etherscanResponse.json();
+        const embed = new EmbedBuilder()
+          .setColor(colourOfEmbed) // Set the color of the embed
+          .setTitle(`Transaction Details`) // Title of the embed
+          .setImage(imageUrl) // Add the NFT image
+          .addFields(
+            {
+              name: `Transaction Hash`,
+              value: transfer.transactionHash,
+              inline: true,
+            },
+            { name: "From", value: transfer.from, inline: true },
+            { name: "To", value: transfer.to, inline: true },
+            // [View On Etherscan] (https://etherscan.io/tx/${transfer.transactionHash})
+            { name: "Token ID", value: transfer.tokenId, inline: true },
+            {
+              name: "Timestamp",
+              value: new Date(transfer.blockTimestamp * 1000).toLocaleString(),
+              inline: true,
+            },
+            {
+              name: "Etherscan",
+              value: `[Click](https://etherscan.io/tx/${transfer.transactionHash})`,
+            }
+          )
+          .setTimestamp() // Add a timestamp
+          .setFooter({ text: "NFTSentry" }); // Footer
 
-        if (etherscanData && etherscanData.result) {
-          // The transaction value is in 'result.value', which is in Wei (smallest unit of Ether)
-          const valueInWei = etherscanData.result.value;
-          const valueInEther = (parseInt(valueInWei) / 10 ** 18).toFixed(6); // Convert Wei to Ether
-
-          // PNG of NFT URL
-          const imageUrl = `https://storage.googleapis.com/nftimagebucket/tokens/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d/preview/${transfer.tokenId}.png`;
-
-          const embed = new EmbedBuilder()
-            .setColor(colourOfEmbed) // Set the color of the embed
-            .setTitle(`Transaction Details`) // Title of the embed
-            .setImage(imageUrl) // Add the NFT image
-            .addFields(
-              {
-                name: `Transaction Hash`,
-                value: transfer.transactionHash,
-                inline: true,
-              },
-              { name: "From", value: transfer.from, inline: true },
-              { name: "To", value: transfer.to, inline: true },
-              { name: "Token ID", value: transfer.tokenId, inline: true },
-              {
-                name: "Timestamp",
-                value: new Date(
-                  transfer.blockTimestamp * 1000
-                ).toLocaleString(),
-                inline: true,
-              },
-              {
-                name: "Transaction Value", // New field for the transaction value
-                value: `${valueInEther} ETH`,
-                inline: true,
-              },
-              {
-                name: "Etherscan",
-                value: `[Click Here](https://etherscan.io/tx/${transfer.transactionHash})`,
-              }
-            )
-            .setTimestamp() // Add a timestamp
-            .setFooter({ text: "NFTSentry" }); // Footer
-
-          // Send the embed response
-          await interaction.reply({
-            embeds: [embed],
-            ephemeral: hideResponseFromAll,
-          });
-        } else {
-          await interaction.reply({
-            content: `Transaction details could not be retrieved.`,
-            ephemeral: true,
-          });
-        }
+        // Send the embed response
+        await interaction.reply({
+          embeds: [embed],
+          ephemeral: hideResponseFromAll,
+        });
       } else {
         await interaction.reply({
           content: `No transaction found for hash: ${transactionHash}.`,
