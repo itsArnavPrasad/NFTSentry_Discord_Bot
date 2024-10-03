@@ -135,17 +135,23 @@ client.on("interactionCreate", async (interaction) => {
 
         // Loop through the transfers and add them to the embed
         result.transfers.forEach((transfer, index) => {
-          embed.addFields({
-            name: `Transfer #${index + 1}, **Token ID:** ${transfer.tokenId}`,
-            value: `**From:** ${transfer.from}\n**To:** ${
-              transfer.to
-            }\n**Transaction Hash:** ${
-              transfer.transactionHash
-            }\n**Timestamp:** ${new Date(
-              transfer.blockTimestamp * 1000
-            ).toLocaleString()}\n`,
-            inline: false,
-          });
+          embed.addFields(
+            {
+              name: `Transfer #${index + 1}, **Token ID:** ${transfer.tokenId}`,
+              value: `**From:** ${transfer.from}\n**To:** ${
+                transfer.to
+              }\n**Transaction Hash:** ${
+                transfer.transactionHash
+              }\n**Timestamp:** ${new Date(
+                transfer.blockTimestamp * 1000
+              ).toLocaleString()}\n`,
+              inline: false,
+            },
+            {
+              name: "**Etherscan**",
+              value: `[Click Here](https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d?a=${tokenId})`,
+            }
+          );
         });
 
         // Send the embed response

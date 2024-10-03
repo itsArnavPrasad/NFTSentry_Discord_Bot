@@ -10,12 +10,12 @@ NFTSentry is a Discord bot designed to provide users with real-time information 
 
 ## Features
 
-- **Latest Transfers**: Fetch the latest 5 transfers of NFTs in the BAYC collection.
-- **Transaction Search**: Look up specific transactions by hash to view detailed transfer information.
-- **NFT Details**: Get information about the attributes of a specific NFT by token ID.
-- **NFT Ownership Details**: Get the ownership history of a particular NFT, from its minting.
-- **Current Ownership**: Get the current owner of a particular NFT.
-- **Help Command**: Displays all available commands with their descriptions to assist users.
+- **Latest Transfers**: Retrieve the 5 most recent NFT transfers from the BAYC collection, including token ID, sender, receiver, transaction hash, and timestamp.
+- **Transaction Search**: Search for detailed information about a specific transaction using its hash, with details such as token ID, sender, receiver, transaction hash, timestamp, and an image of the NFT.
+- **NFT Details**: Get comprehensive information on an NFT by its token ID, including its attributes and a link to its Etherscan page.
+- **Ownership History**: View the complete ownership history of an NFT, including previous owners, transaction hashes, timestamps, and the NFT image.
+- **Current Ownership**: Check the current owner of a specific NFT by its token ID, with the latest transaction details and the NFT image.
+- **Help Command**: Display a list of all available bot commands with their descriptions to guide users on how to interact with the bot.
 
 ## Getting Started
 
@@ -68,10 +68,35 @@ Once running, the bot will log in and indicate it is online. You can now use the
 
 ## Commands
 
-- **/latest_transfers**: Get the 5 latest transfers of the BAYC collection.
-- **/search_transaction \[hash\]**: Search a transaction by its hash.
-- **/nft_details \[token_id\]**: Get details of an NFT by its token ID.
-- **/help**: Show all available commands and their descriptions.
+### `/latest_transfers`
+
+- **Description**: Get the 5 latest transfers of the BAYC collection.
+- **Response**: A detailed embed with information on the 5 latest transfers, including the token ID, sender, receiver, transaction hash, and timestamp.
+
+### `/search_transaction [hash]`
+
+- **Description**: Search for details of a specific transaction by its hash.
+- **Response**: An embed containing transaction details such as token ID, from address, to address, transaction hash, timestamp, and a link to the transaction on Etherscan. An image of the NFT is also included.
+
+### `/nft_details [token_id]`
+
+- **Description**: Get detailed information about an NFT by its token ID.
+- **Response**: An embed with details like token ID, NFT attributes, and a link to the NFT's Etherscan page. Includes an image of the NFT.
+
+### `/current_owner [token_id]`
+
+- **Description**: Fetch the current owner of a specific NFT by token ID.
+- **Response**: An embed showing the token ID, current owner, and the last transaction hash, along with the NFT image.
+
+### `/owner_history [token_id]`
+
+- **Description**: View the ownership history of a specific NFT by token ID.
+- **Response**: An embed showing the transfer history for the NFT, including details like previous owners, transaction hashes, timestamps, and the NFT image.
+
+### `/help_nftsentry`
+
+- **Description**: Display a list of available commands and their descriptions.
+- **Response**: An embed with the list of all available commands and links to my social media accounts.
 
 ## Contributing
 
