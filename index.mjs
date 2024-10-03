@@ -193,16 +193,19 @@ client.on("interactionCreate", async (interaction) => {
 
         const embed = new EmbedBuilder()
           .setColor(colourOfEmbed) // Set the color of the embed
-          .setTitle("Transaction Details") // Title of the embed
+          .setTitle(
+            `Transaction Details, [View On Etherscan] (https://etherscan.io/tx/${transfer.transactionHash})`
+          ) // Title of the embed
           .setImage(imageUrl) // Add the NFT image
           .addFields(
             {
-              name: "Transaction Hash",
+              name: `Transaction Hash`,
               value: transfer.transactionHash,
               inline: true,
             },
             { name: "From", value: transfer.from, inline: true },
             { name: "To", value: transfer.to, inline: true },
+            // [View On Etherscan] (https://etherscan.io/tx/${transfer.transactionHash})
             { name: "Token ID", value: transfer.tokenId, inline: true },
             {
               name: "Timestamp",
@@ -388,7 +391,9 @@ client.on("interactionCreate", async (interaction) => {
       // Create a new embed instance using EmbedBuilder
       const embed = new EmbedBuilder()
         .setColor(colourOfEmbed) // Set the embed color
-        .setTitle("NFT Details") // Set the title of the embed
+        .setTitle(
+          `NFT Details, [View on Etherscan](https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d?a=${tokenId})`
+        ) // Set the title of the embed
         .setImage(imageUrl) // Add the NFT image
         .addFields(
           { name: "**Token ID:**", value: tokenId, inline: true },
